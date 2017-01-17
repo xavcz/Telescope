@@ -8,7 +8,6 @@ import { createNetworkInterface } from 'apollo-client';
 import { Accounts } from 'meteor/accounts-base';
 import { _ } from 'meteor/underscore';
 import 'isomorphic-fetch';
-import Cookie from 'react-cookie';
 
 const defaultNetworkInterfaceConfig = {
   path: '/graphql',
@@ -35,9 +34,17 @@ export const createMeteorNetworkInterface = (givenConfig) => {
 
   networkInterface.use([{
     applyMiddleware(request, next) {
-      // console.log('from router token', config.cookieLoginToken);
-      // console.log('from accounts token', Meteor.isClient && Accounts._storedLoginToken());
-      const currentUserToken = config.cookieLoginToken ? config.cookieLoginToken : Meteor.isClient ? Accounts._storedLoginToken() : null;
+
+      const { cookieLoginToken } = config;
+      const localStorageLoginToken = Meteor.isClient && Accounts._storedLoginToken();
+      
+      let currentUserToken = cookieLoginToken || localStorageLoginToken;
+
+      // a login token is passed to the config, however the "true" one is different! ⚠️
+      if (Meteor.isClient && cookieLoginToken && cookieLoginToken !== localStorageLoginToken) {
+        // be sure to pass the RIGHT token to the request 🎉
+        currentUserToken = localStorageLoginToken; 
+      }
 
       if (!currentUserToken) {
         next();
