@@ -205,6 +205,7 @@ function generateSSRData(clientOptions, serverOptions, req, res, renderProps) {
 
       if (typeof clientOptions.wrapperHook === 'function') {
         const loginToken = req.cookies['meteor_login_token'];
+        console.log('COOKIES', req.cookies);
         app = clientOptions.wrapperHook(app, loginToken);
       }
 

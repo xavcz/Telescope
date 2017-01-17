@@ -38,6 +38,9 @@ export const createMeteorNetworkInterface = (givenConfig) => {
       const { cookieLoginToken } = config;
       const localStorageLoginToken = Meteor.isClient && Accounts._storedLoginToken();
       
+      console.log('cookie', cookieLoginToken);
+      console.log('local', localStorageLoginToken);
+      
       let currentUserToken = cookieLoginToken || localStorageLoginToken;
 
       // a login token is passed to the config, however the "true" one is different! ⚠️
@@ -56,7 +59,7 @@ export const createMeteorNetworkInterface = (givenConfig) => {
       }
 
       request.options.headers.Authorization = currentUserToken;
-
+      console.log('req option:', request.options.headers.Authorization)
       next();
     },
   }]);

@@ -56,6 +56,7 @@ const ReactRouterSSR = {
 
       if (typeof clientOptions.wrapperHook === 'function') {
         const loginToken = Cookie.load('meteor_login_token') || localStorage['Meteor.loginToken'];
+        console.log('WRAPPER HOOK', loginToken);
         app = clientOptions.wrapperHook(app, loginToken);
       }
 
