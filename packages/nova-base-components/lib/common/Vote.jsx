@@ -47,7 +47,11 @@ class Vote extends Component {
       // this.stopLoading();
     } else {
       const voteType = hasUpvoted(user, document) ? "cancelUpvote" : "upvote";
+      console.log('before triggering mutation on', collection._name);
       this.props.vote({document, voteType, collection, currentUser: this.props.currentUser}).then(result => {
+        const {data: {vote: {__typename, upvotes}}} = result;
+        // console.log(result);
+        console.log('mutation result', __typename, upvotes);
         // this.stopLoading();
       });
     } 
@@ -91,7 +95,6 @@ Vote.propTypes = {
 };
 
 Vote.contextTypes = {
-  actions: React.PropTypes.object,
   events: React.PropTypes.object,
 };
 

@@ -129,8 +129,15 @@ Call operateOnItem, update the db with the result, run callbacks.
 
 */
 export const mutateItem = function (collection, originalItem, user, operation) {
+  console.log(operation);
+  console.log(originalItem);
+  
   const newItem = operateOnItem(collection, originalItem, user, operation, false);
   newItem.inactive = false;
+  
+  console.log(newItem.upvotes);
+  console.log(newItem.upvoters);
+  console.log(collection._name);
   collection.update({_id: newItem._id}, newItem, {bypassCollection2:true});
 
   // --------------------- Server-Side Async Callbacks --------------------- //

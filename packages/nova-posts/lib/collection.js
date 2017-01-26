@@ -13,6 +13,8 @@ const Posts = createCollection({
   collectionName: 'posts',
 
   typeName: 'Post',
+  
+  votable: true,
 
   schema,
 

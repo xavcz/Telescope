@@ -61,6 +61,14 @@ PostsCommentsThread.fragment = gql`
       emailHash
       slug
     }
+    upvoters {
+      _id
+    }
+    downvoters {
+      _id
+    }
+    upvotes
+    score
     post {
       _id
       commentCount

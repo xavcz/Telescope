@@ -2,6 +2,7 @@ import React, { PropTypes, Component } from 'react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { operateOnItem } from '../vote.js';
+import { Utils } from 'meteor/nova:core'; 
 
 const withVote = component => {
 
@@ -24,6 +25,8 @@ const withVote = component => {
     props: ({ownProps, mutate}) => ({
       vote: ({document, voteType, collection, currentUser}) => {
         const voteResult = operateOnItem(collection, document, currentUser, voteType, true);
+        console.log('collection operated on', collection._name);
+        console.log('withVote result summary', {upvotes: voteResult.upvotes, upvoters: voteResult.upvoters});
         return mutate({ 
           variables: {
             documentId: document._id, 

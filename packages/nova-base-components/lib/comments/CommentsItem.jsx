@@ -55,13 +55,22 @@ class CommentsItem extends Component{
 
     const showReplyButton = !this.props.comment.isDeleted && !!this.props.currentUser;
 
+    console.log('rendering CommentsItem', {upvotes: this.props.comment.upvotes, upvoters: this.props.comment.upvoters});
+
     return (
       <div className="comments-item-text">
         <div dangerouslySetInnerHTML={htmlBody}></div>
         { showReplyButton ?
-          <a className="comments-item-reply-link" onClick={this.showReply}>
-            <Components.Icon name="reply"/> <FormattedMessage id="comments.reply"/>
-          </a> : null}
+          (
+            <div>
+              <div className="posts-item-vote">
+                <Components.Vote collection={Comments} document={this.props.comment} currentUser={this.props.currentUser}/>
+              </div>
+              <a className="comments-item-reply-link" onClick={this.showReply}>
+                <Components.Icon name="reply"/> <FormattedMessage id="comments.reply"/>
+              </a>
+            </div>
+        ) : null}
       </div>
     )
   }
