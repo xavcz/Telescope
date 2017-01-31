@@ -1,47 +1,77 @@
 import gql from 'graphql-tag';
-import { registerFragment } from 'meteor/nova:core';
+import { registerFragment, getFragment } from 'meteor/nova:core';
+
+registerFragment(gql`
+  fragment VotedItem on Vote {
+    itemId
+    power
+    votedAt
+  }
+`);
+
+registerFragment(gql`
+  fragment UsersMinimumInfo on User {
+    _id
+    slug
+    username
+    displayName
+    emailHash
+  }
+`);
 
 registerFragment(gql`
   fragment UsersProfile on User {
-    _id
-    username
+    ...UsersMinimumInfo
     createdAt
     isAdmin
     bio
-    commentCount
-    displayName
-    downvotedComments {
-      itemId
-      power
-      votedAt
-    }
-    downvotedPosts {
-      itemId
-      power
-      votedAt
-    }
-    emailHash
-    groups
     htmlBio
-    karma
+    groups
+    twitterUsername
+    website
     newsletter_subscribeToNewsletter
     notifications_users
     notifications_posts
+    karma
     postCount
-    slug
-    twitterUsername
+    commentCount
+    downvotedComments {
+      ...VotedItem
+    }
+    downvotedPosts {
+      ...VotedItem
+    }
     upvotedComments {
-      itemId
-      power
-      votedAt
+      ...VotedItem
     }
     upvotedPosts {
-      itemId
-      power
-      votedAt
+      ...VotedItem
     }
-    website
   }
+  ${getFragment('UsersMinimumInfo')}
+  ${getFragment('VotedItem')}
+`);
+
+registerFragment(gql`
+  fragment CategoriesMinimumInfo on Category {
+    _id
+    name
+    slug
+  }
+`);
+
+registerFragment(gql`
+  fragment CategoriesList on Category {
+    ...CategoriesMinimumInfo
+    description
+    order
+    image
+    parentId
+    parent {
+      _id
+    }
+  }
+  ${getFragment('CategoriesMinimumInfo')}
 `);
 
 const PostsFragment = gql`
@@ -55,18 +85,11 @@ const PostsFragment = gql`
     sticky
     status
     categories {
-      # ...minimumCategoryInfo
-      _id
-      name
-      slug
+      ...CategoriesMinimumInfo
     }
     commentCount
     commenters {
-      # ...avatarUserInfo
-      _id
-      displayName
-      emailHash
-      slug
+      ...UsersMinimumInfo
     }
     upvoters {
       _id
@@ -81,14 +104,12 @@ const PostsFragment = gql`
     viewCount # should be asked only for admins?
     clickCount # should be asked only for admins?
     user {
-      # ...avatarUserInfo
-      _id
-      displayName
-      emailHash
-      slug
+      ...UsersMinimumInfo
     }
     userId
   }
+  ${getFragment('UsersMinimumInfo')}
+  ${getFragment('CategoriesMinimumInfo')}
 `;
 
 registerFragment(PostsFragment);
@@ -105,19 +126,13 @@ registerFragment(gql`
     htmlBody
     postedAt
     user {
-      _id
-      displayName
-      emailHash
-      slug
+      ...UsersMinimumInfo
     }
     post {
       _id
       commentCount
       commenters {
-        _id
-        displayName
-        emailHash
-        slug
+        ...UsersMinimumInfo
       }
     }
     userId
@@ -132,19 +147,5 @@ registerFragment(gql`
     baseScore # should be asked only for admins?
     score # should be asked only for admins?
   }
-`);
-
-registerFragment(gql`
-  fragment CategoriesList on Category {
-    _id
-    name
-    description
-    order
-    slug
-    image
-    parentId
-    parent {
-      _id
-    }
-  }
+  ${getFragment('UsersMinimumInfo')}
 `);
